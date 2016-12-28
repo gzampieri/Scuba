@@ -128,7 +128,7 @@ parser.add_argument('--disease-genes', required=True, help='Path to the list of 
 parser.add_argument('--output', required=True, help='Path and name of the output files.')
 parser.add_argument('--candidate-genes', default=None, help='Path to the list of input candidate genes.')
 parser.add_argument('-t', '--test', default=None, help='Perform tests on benchmark validation settings. Options: "unbiased" for the unbiased evaluation (ignored by default).')
-parser.add_argument('-a', '--algorithm', default='ueasy', help='Options: "easy" for EasyMKL"; "scuba" for Scuba, used by default.')
+parser.add_argument('-a', '--algorithm', default='scuba', help='Options: "easy" for EasyMKL"; "scuba" for Scuba, used by default.')
 parser.add_argument('--model-selection', default='grid', help='Strategy for selecting the regularization hyper-parameter(s). Options: "grid" for grid search and "random" for random search (grid by default).')
 parser.add_argument('-i', '--iterations', type=int, default=5, help='Number of parameter values to try in model selection (5 by default).')
 parser.add_argument('-f', '--folds', type=int, default=1, help='Number of folds of cross validation in model selection (leave-one-out by default).')
@@ -157,7 +157,7 @@ def main():
 		from prioritizer import Scuba
 		prior = Scuba()
 	else:
-		raise ValueError('Specify a correct algorithm! (easy, ueasy, ueasydr)')
+		raise ValueError('Specify a correct algorithm! (easy, scuba)')
 	
 	if args.cv_measure == 'auroc':
 		import evaluation as ev
