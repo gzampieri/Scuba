@@ -14,21 +14,21 @@ Usage:
 
 Mandatory arguments:
     input_matrix -- 	Text file containing one of the following:
-        					- adjacency matrix of an undirected graph, namely a squared symmetric matrix where entry A_ij represents the weight of the link between items (genes) i and j;
-                    - feature matrix, with samples (genes) along the rows and features along the columns.
+        			- adjacency matrix of an undirected graph, namely a squared symmetric matrix where entry A_ij represents the weight of the link between items (genes) i and j;
+                   		- feature matrix, with samples (genes) along the rows and features along the columns.
 	
-    kernel_function -- Kernel function to use.
-					   Options: - Markov exponential diffusion kernel (MEDK);
-    								- Markov diffusion kernel (MDK);
-					            - regularized Laplacian kernel (RLK);
-                            - radial basis function kernel (RBF).
+    kernel_function -- Kernel function to use. Options: 
+    				- Markov exponential diffusion kernel (MEDK);
+    				- Markov diffusion kernel (MDK);
+				- regularized Laplacian kernel (RLK);
+                            	- radial basis function kernel (RBF).
 	
     output_file -- Path and name of the output kernel matrix, which is saved as a npy file.
 
 
 Optional arguments:
     kernel_parameter -- Value of the kernel parameter (float for MEDK and RLK; int for MDK).
-			            By default, it is equal to 0.04 for MEDK, 10 for MDK, 4.0 for RLK and 1.0 for RBF.
+			By default, it is equal to 0.04 for MEDK, 10 for MDK, 4.0 for RLK and 1.0 for RBF.
 
 
 Dependencies:
