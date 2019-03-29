@@ -43,7 +43,7 @@ class Task():
 	def __init__(self, kernel_path, output_path, ms):
 
 		self.gene_indeces = io.load_all_genes(kernel_path)
-		self.kernel_names, kernel_list = io.load_kernels(kernel_path)
+		self.kernel_names, kernel_list = io.load_kernels(kernel_path, self.gene_indeces)
 		self.output_path = output_path
 		self.ms = ms
 		self.ms.set_kernel_list(kernel_list)

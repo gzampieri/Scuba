@@ -26,22 +26,6 @@ import pandas as pd
 import numpy as np
 
 
-
-def load_dictionary(path):
-	""" Load dictionary from file. """
-	
-	with open(path,'r') as f:
-		lines = f.readlines()
-	
-	dictionary= {}
-	for line in lines:
-		words = line.rstrip().split()
-		dictionary.update({words[0]:int(words[1])})        
-	
-	return dictionary
-
-
-
 def load_all_genes(kernel_path):
 	""" Load the full list of genes with corresponding indeces. 
 	
@@ -54,35 +38,70 @@ def load_all_genes(kernel_path):
 	with open(kernel_path,'r') as f:
 		kernel_path_list = [line.rstrip() for line in f.readlines()]
 	
-	all_genes_dict = load_dictionary(kernel_path_list[0].split('_Matrix')[0] + '_Index')
-		
-	return all_genes_dict
+	all_genes_list = pd.DataFrame()
+	for path in kernel_path_list:
+		l = pd.read_table(path.split('_Matrix')[0] + '_Index.txt', sep=' ', header=None)
+		all_genes_list = pd.concat([all_genes_list, l])
+	
+	all_genes_list = list(pd.unique(all_genes_list[0]))
+        all_genes_dict = {all_genes_list[i] : i for i in xrange(len(all_genes_list))}
+	
+        return all_genes_dict
 
 
 
-def load_kernels(kernel_path):
+def load_kernels(kernel_path, all_genes_dict):
 	""" Load the list of kernels. 
 	
 	Parameters:
 	kernel_path -- Path of the file containing kernels' paths.
+        all_genes_dict -- Dictionary whose keys are genes represented by kernels and whose values are corresponding indeces.
 	
 	Return:
 	kernel_name_list -- List of kernel file names.
 	kernel_list -- List of pandas data frames, each one representing a kernel matrix.
+
+        Notes:
+        If the gene set represented by the kernel matrices do not fully overlap, these are expanded to include the global set with the kernel average replacing missing values.
 	"""
-	
+		
 	with open(kernel_path,'r') as f:
 		kernel_path_list = [line.rstrip() for line in f.readlines()]
 	
-	kernel_list = []
-	for path in kernel_path_list:
-		kernel_matrix = np.load(path)
-		kernel_matrix = pd.DataFrame(data=kernel_matrix)
-		kernel_list.append(kernel_matrix)
+        kernel_list = []
+        for path in kernel_path_list:
+                #Load kernel matrix
+                kernel_matrix = np.load(path)
+                kernel_matrix = pd.DataFrame(data=kernel_matrix)
+		
+                #Dictionary of indeces related to the kernel matrix and associated to gene name
+                gene_index_dict = pd.read_table(path.split('_Matrix')[0] + '_Index.txt', sep=' ', names='gene_name gene_index'.split(), index_col='gene_index')
+                
+		# Calculate mean kernel value
+		kernel_mean = kernel_matrix.sum().sum() / kernel_matrix.size
+                # Add gene_name column to kernel matrix in order to perform the following reindex
+                kernel_matrix['gene_name'] = gene_index_dict.gene_name
+                # Reindex with gene_name
+                kernel_matrix = kernel_matrix.set_index('gene_name')
+                # Change name of columns with gene_name
+                kernel_matrix.columns = [kernel_matrix.index[i] for i in xrange(len(kernel_matrix))]
+                # 1) Reindex to all genes list (rows)
+                # 2) Transpose matrix (rows and columns are inverted)
+                # 3) Reindex to all genes list (columns)
+                # 4) Replace NaN values with 0
+		final_kernel_matrix = kernel_matrix.reindex(all_genes_dict.keys()).transpose().reindex(all_genes_dict.keys()).fillna(kernel_mean)
+		
+		# Normalize matrix to get unitary diagonal sum
+		mean_trace = np.mean(np.diag(final_kernel_matrix))
+		final_kernel_matrix = final_kernel_matrix.divide(mean_trace)
+		
+		# Update the list of kernels
+                kernel_list.append(final_kernel_matrix)
+        
 	
 	kernel_name_list = [path.split('/')[-1] for path in kernel_path_list]
-	
-	return kernel_name_list, kernel_list
+        
+        return kernel_name_list, kernel_list
 
 
 
@@ -145,7 +164,7 @@ def load_indeces(path, all_genes_dict):
 	discarded = []
 	for gene in genes:
 		if gene in all_genes_dict.keys():
-			indeces.append(all_genes_dict[gene])
+                        indeces.append(all_genes_dict[gene])
 		else:
 			discarded.append(gene)
 	
@@ -190,7 +209,7 @@ def save_rank(path, scores, genes, all_genes_dict):
 	"""
 	
 	rank = sorted(zip(scores, genes), reverse=True)
-	with open(path+'_rank', 'w') as f:
+	with open(path+'_rank.txt', 'w') as f:
 			for score, gene in rank:
 				f.write(all_genes_dict.keys()[all_genes_dict.values().index(gene)] + "\t" + str(score) + "\n")
 
@@ -207,8 +226,8 @@ def save_details(path, best_lambda, kernel_names, weights):
 	file_name -- Label for the output files (empty string by default)
 	"""
 	
-	with open(path+"_details",'w') as f:
-		f.write("EasyMKL parameter selected:\n\t" + str(best_lambda) + "\n\n")
+	with open(path+"_details.txt",'w') as f:
+            f.write("Regularization hyper-parameter value:\n\t" + str(best_lambda) + "\n\n")
 		f.write("Weights of kernels:\n")
 		for i in range(len(weights)):
 			f.write("\t" + kernel_names[i] + "\t" + str(weights[i]) + "\n")
@@ -223,7 +242,7 @@ def save_results(path, results):
 	results -- Dictionary containing the results for each quantity computed.
 	"""
 	
-	with open(path+"_results",'w') as f:
+	with open(path+"_results.txt",'w') as f:
 		for measure in sorted(results):
 			f.write(measure + "\t\t" + str(results[measure]) + "\n")
 

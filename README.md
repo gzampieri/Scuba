@@ -25,15 +25,27 @@ Running this code may be a computationally intensive procedure. Validations ment
 
 # Dependencies
 
-This code was tested using Python 2.7.3, Numpy 1.11.1, Pandas 0.18.1 and Scikit-learn 0.17.1. 
+This code was tested using Python 2.7.14, Numpy 1.14.2, Pandas 0.23.4 and Scikit-learn 0.19.1. 
 
 
 # Usage
 
-Scuba is usable from command line by typing `python launcher.py [arguments]`.
+Scuba is usable from command line by typing `python launcher.py [arguments]`. For information on the arguments, type `python launcher.py --help` or see the documentation in [launcher.py](launcher.py).
 
-For information on arguments, type `python launcher.py --help` or see the documentation in [launcher.py](https://github.com/gzampieri/Scuba/blob/master/launcher.py).
+Folder [Toy data](Toy data/) contains simple inputs and corresponding outputs that can be used to check code functioning.
 
+Script [compute_kernel.py](compute_kernel.py) allows creating kernel matrices from available datasets through a few kernel functions.
+For instance, starting from a gene network adjacency matrix such as [dataset1_adjacencyMatrix.txt](Toy data/dataset1_adjacencyMatrix.txt), run:
+```python compute_kernel.py --input-matrix <path to file>/dataset1_adjacencyMatrix.txt --kernel-function MDK --output <path to file>/dataset1_Matrix_MDK3 -p 3```
+to get [dataset1_Matrix_MDK3.npy](Toy data/dataset1_Matrix_MDK3.npy). Analogously, for a numerical feature matrix such as [dataset2_featureMatrix.txt](Toy data/dataset2_featureMatrix.txt) the *RBF* function can be used.
+
+To prioritize the whole set of genes represented by the kernel matrices, run:
+```python launcher.py --kernel-list <path to file>/my_kernels.txt --disease-genes <path to file>/my_disease_genes.txt --output <path to file>/my_output```
+or, optionally, if a list of candidate genes is available:
+```python launcher.py --kernel-list <path to file>/my_kernels.txt --disease-genes <path to file>/my_disease_genes.txt --output <path to file>/my_output --candidate-genes <path to file>/my_candidates.txt```
+
+If you use Scuba, please cite:
+Zampieri, G., Van Tran, D., Donini, M., Navarin, N., Aiolli, F., Sperduti, A., & Valle, G. (2018). [Scuba: scalable kernel-based gene prioritization.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2025-5) *BMC bioinformatics*, 19(1), 23.
 
 
 # License

@@ -46,7 +46,7 @@ Running this code may be a computationally intensive procedure. Validations ment
 
 # Dependencies
 
-This code was tested using Python 2.7.3, Numpy 1.11.1, Pandas 0.18.1 and Scikit-learn 0.17.1. 
+This code was tested using Python 2.7.14, Numpy 1.14.2, Pandas 0.23.4 and Scikit-learn 0.19.1. 
 
 
 # Usage
@@ -71,6 +71,8 @@ Mandatory arguments:
 						A1CF 1735
 						A2BP1 9498
 						A2M 2128
+
+                                    Data sources do not strictly need to include the same sets of genes. If the gene sets represented by the kernel matrices do not fully overlap, these are expanded to include the global set and the missing values are replaced by the kernel average.
 						
 	disease_genes -- In the case a single prediction is desired, path of a text file containing the list of input disease genes (seed genes), one gene per line.
 					 Example:

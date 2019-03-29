@@ -32,7 +32,7 @@ Optional arguments:
 
 
 Dependencies:
-    This code was tested using Python 2.7.3, Numpy 1.9.1 and Scipy 0.15.1.
+    This code was tested using Python 2.7.14, Numpy 1.14.2 and Scipy 1.0.0.
 
 """
 
@@ -58,13 +58,25 @@ def main():
     A = np.loadtxt(args.input_matrix)
     
     if args.kernel_function == "MEDK":
-        K = get_MEDK(A, args.kernel_parameter)
+        if args.kernel_parameter == None:
+            K = get_MEDK(A)
+        else:
+            K = get_MEDK(A, args.kernel_parameter)
     elif args.kernel_function == "MDK":
-        K = get_MDK(A, int(args.kernel_parameter))
+        if args.kernel_parameter == None:
+            K = get_MDK(A)
+        else:
+            K = get_MDK(A, int(args.kernel_parameter))
     elif args.kernel_function == "RLK":
-        K = get_RLK(A, args.kernel_parameter)
+        if args.kernel_parameter == None:
+            K = get_RLK(A)
+        else:
+            K = get_RLK(A, args.kernel_parameter)
     elif args.kernel_function == "RBF":
-        K = get_RBF(A, args.kernel_parameter)
+        if args.kernel_parameter == None:
+            K = get_RBF(A)
+        else:
+            K = get_RBF(A, args.kernel_parameter)
     np.save(args.output_file, K)
 
 
@@ -93,7 +105,7 @@ def get_MEDK(A, beta=0.04):
         D[idx, idx] = sum(A[idx,:])
     I = np.identity(N)
     M = (beta/N)*(N*I - D + A)
-    MEDK = expm(M, q=None)
+    MEDK = expm(M)
     
     return MEDK
 

@@ -1,0 +1,8 @@
+Regularization hyper-parameter value:
+	0.25
+
+Weights of kernels:
+	dataset1_Matrix_MDK3.npy	0.22476377984153542
+	dataset1_Matrix_MDK4.npy	0.22749420652758812
+	dataset2_Matrix_RBF0.1.npy	0.2996072658592492
+	dataset2_Matrix_RBF0.5.npy	0.2481347477716272

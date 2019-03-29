@@ -180,7 +180,7 @@ class EasyMKL():
 		self.gammas = self.komd_train(Ktr_weighted_sum, self.labels, Xp, Xn)
 		
 		yg =  self.gammas*self.labels
-		self.r = Ktr_weighted_sum.dot(yg).as_matrix()
+		self.r = Ktr_weighted_sum.dot(yg).values
 		
 		return self.weights
 
@@ -212,11 +212,11 @@ class EasyMKL():
 		weights = []
 		if self.large_data:
 			X = Xp + [Xn[np.random.randint(len(Xn))] for i in range(int((len(Xp)+len(Xn))/10))]
-			g = gammas.iloc[X]
-			l = labels.iloc[X]
+                        g = gammas.loc[X]
+			l = labels.loc[X]
 			yg = g*l
 			for K in Ktr_list:
-				k = K.iloc[X,X]
+				k = K.loc[X,X]
 				b = yg.dot(k).dot(yg)
 				weights.append(b)
 		else:
@@ -273,11 +273,11 @@ class Scuba(EasyMKL):
 	def komd_train(self, K, labels, Xp, Xn):
 		""" Train KOMD with unbalanced regularization. """
 		
-		P = matrix((1.0-self.lambda_p)*K.loc[Xp,Xp].as_matrix() + np.diag([self.lambda_p]*len(Xp)))
+		P = matrix((1.0-self.lambda_p)*K.loc[Xp,Xp].values + np.diag([self.lambda_p]*len(Xp)))
 		if self.large_data:
-			q = matrix(-(1.0-self.lambda_p)*self.q.loc[Xp].as_matrix())
+			q = matrix(-(1.0-self.lambda_p)*self.q.loc[Xp].values)
 		else:
-			q = matrix(-(1.0-self.lambda_p)*K.loc[Xp,Xn].as_matrix().dot([1.0/len(Xn)]*len(Xn)))
+			q = matrix(-(1.0-self.lambda_p)*K.loc[Xp,Xn].values.dot([1.0/len(Xn)]*len(Xn)))
 		G = -matrix(np.diag([1.0]*len(Xp)))
 		h = matrix(0.0, (len(Xp),1))
 		A = matrix(1.0, (len(Xp),1)).T
