@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 """
 @authors: Dinh Tran and Guido Zampieri

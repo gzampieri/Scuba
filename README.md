@@ -32,14 +32,14 @@ This code was tested using Python 2.7.14, Numpy 1.14.2, Pandas 0.23.4 and Scikit
 
 Scuba is usable from command line by typing `python launcher.py [arguments]`. For information on the arguments, type `python launcher.py --help` or see the documentation in [launcher.py](launcher.py).
 
-Folder [Toy data](Toy%20data/) contains simple inputs and corresponding outputs that can be used to check code functioning.
+Folder [Toy data](Toy_data/) contains simple inputs and corresponding outputs that can be used to check code functioning.
 
 Script [compute_kernel.py](compute_kernel.py) allows creating kernel matrices from available datasets through a few kernel functions.
-For instance, starting from a gene network adjacency matrix such as [dataset1_adjacencyMatrix.txt](Toy%20data/dataset1_adjacencyMatrix.txt), run:
+For instance, starting from a gene network adjacency matrix such as [dataset1_adjacencyMatrix.txt](Toy_data/dataset1_adjacencyMatrix.txt), run:
 
 ```python compute_kernel.py --input-matrix <path to file>/dataset1_adjacencyMatrix.txt --kernel-function MDK --output <path to file>/dataset1_Matrix_MDK3 -p 3```
 
-to get [dataset1_Matrix_MDK3.npy](Toy%20data/dataset1_Matrix_MDK3.npy). Analogously, for a numerical feature matrix such as [dataset2_featureMatrix.txt](Toy%20data/dataset2_featureMatrix.txt) the *RBF* function can be used.
+to get [dataset1_Matrix_MDK3.npy](Toy_data/dataset1_Matrix_MDK3.npy). Analogously, for a numerical feature matrix such as [dataset2_featureMatrix.txt](Toy_data/dataset2_featureMatrix.txt) the *RBF* function can be used.
 
 To prioritize the whole set of genes represented by the kernel matrices, run:
 
@@ -48,6 +48,12 @@ To prioritize the whole set of genes represented by the kernel matrices, run:
 or, optionally, if a list of candidate genes is available:
 
 ```python launcher.py --kernel-list <path to file>/my_kernels.txt --disease-genes <path to file>/my_disease_genes.txt --output <path to file>/my_output --candidate-genes <path to file>/my_candidates.txt```
+
+Alternatively, to perform the so-called "unbiased" ([CAFA](https://www.nature.com/articles/nmeth.2340)-like) validation described in the paper, run:
+
+```python launcher.py --kernel-list <path to file>/my_kernels.txt --disease-genes <path to file>/seeds_unbiased_Ensembl.txt --candidate-genes <path to file>/candidates_unbiased_Ensembl.txt --output <path to file>/my_output -f 4 -i 11 --test unbiased```
+
+Parameters f and i (and model-selection) can be changed as needed, however note that f should not be greater than 4 as there is a test case with only 4 known disease genes.
 
 If you use Scuba, please cite:
 Zampieri, G., Van Tran, D., Donini, M., Navarin, N., Aiolli, F., Sperduti, A., & Valle, G. (2018). [Scuba: scalable kernel-based gene prioritization.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2025-5) *BMC bioinformatics*, 19(1), 23.

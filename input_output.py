@@ -210,8 +210,8 @@ def save_rank(path, scores, genes, all_genes_dict):
 	
 	rank = sorted(zip(scores, genes), reverse=True)
 	with open(path+'_rank.txt', 'w') as f:
-			for score, gene in rank:
-				f.write(all_genes_dict.keys()[all_genes_dict.values().index(gene)] + "\t" + str(score) + "\n")
+                for score, gene in rank:
+	                f.write(all_genes_dict.keys()[all_genes_dict.values().index(gene)] + "\t" + str(score) + "\n")
 
 
 
@@ -227,7 +227,7 @@ def save_details(path, best_lambda, kernel_names, weights):
 	"""
 	
 	with open(path+"_details.txt",'w') as f:
-            f.write("Regularization hyper-parameter value:\n\t" + str(best_lambda) + "\n\n")
+                f.write("Regularization hyper-parameter value:\n\t" + str(best_lambda) + "\n\n")
 		f.write("Weights of kernels:\n")
 		for i in range(len(weights)):
 			f.write("\t" + kernel_names[i] + "\t" + str(weights[i]) + "\n")
